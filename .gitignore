@@ -1,0 +1,9 @@
+# Ignorar arquivos de sessão do WhatsApp Web
+.wwebjs_auth/
+
+.wwebjs_cache/
+
+node_modules/
+
+# Ignorar arquivos de log, caso haja
+*.log
