@@ -1,9 +1,27 @@
-const { createTable } = require('./db');
-const { client } = require('./whatsappBot');
-const { saveTask } = require('./taskManager');
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+const { handleIncomingMessage } = require('./service/handler');
 
-// Cria as tabelas no banco de dados
-createTable();
+const client = new Client({
+    authStrategy: new LocalAuth(),
+});
 
-// Inicializa o cliente do WhatsApp
+client.on('qr', qr => {
+    qrcode.generate(qr, { small: true });
+});
+
+client.on('ready', () => {
+    console.log('WhatsApp conectado.');
+});
+
+client.on('message', async msg => {
+    try {
+        await handleIncomingMessage(client, msg);
+    } catch (error) {
+        console.error('Erro ao processar mensagem:', error);
+    }
+});
+
 client.initialize();
+
+module.exports = client;
