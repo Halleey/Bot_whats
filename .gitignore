@@ -4,6 +4,7 @@
 .wwebjs_cache/
 
 node_modules/
+Bot_whats/*.json
 
 # Ignorar arquivos de log, caso haja
 *.log

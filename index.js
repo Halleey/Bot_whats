@@ -1,6 +1,8 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const { handleIncomingMessage } = require('./service/handler');
+const { handleStickerRequest } = require('./service/stickerService'); 
+const { handleWelcomeMessage } = require('./service/welcomeHandler'); 
+const { handleAnimatedStickerRequest } = require('./service/animatedStickerService'); 
 
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -16,7 +18,11 @@ client.on('ready', () => {
 
 client.on('message', async msg => {
     try {
-        await handleIncomingMessage(client, msg);
+        await handleWelcomeMessage(client, msg);
+        
+        await handleStickerRequest(client, msg);
+
+        await handleAnimatedStickerRequest(client, msg);
     } catch (error) {
         console.error('Erro ao processar mensagem:', error);
     }
