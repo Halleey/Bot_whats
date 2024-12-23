@@ -31,7 +31,8 @@ const handleWelcomeMessage = async (client, msg) => {
             Comandos disponíveis:
             - !sticker: Envie uma imagem e eu a transformarei em uma figurinha para você.
             - !s: Envie um gif e transformo em figurinha animada.
-
+            - !animado: Envie um video curto de até 10 segundos e transformo em figurinhas.
+            
             Fique à vontade para me chamar sempre que precisar!`;
 
             // Envia a mensagem de boas-vindas

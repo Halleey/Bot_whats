@@ -12,7 +12,7 @@ const createWebPStickerFromVideo = async (videoPath) => {
 
         await new Promise((resolve, reject) => {
             ffmpeg(videoPath)
-                .outputOptions('-vf', 'fps=6,scale=512:512') // Define o FPS e escala do WebP
+                .outputOptions('-vf', 'fps=10,scale=512:512') // Define o FPS e escala do WebP
                 .output(webpPath)
                 .on('end', resolve)
                 .on('error', reject)
@@ -75,7 +75,7 @@ const handleVideoToStickerRequest = async (client, msg) => {
         console.log('Sticker animado enviado com sucesso!');
     } catch (error) {
         console.error('Erro ao processar o sticker animado:', error);
-        await client.sendMessage(msg.from, 'Ocorreu um erro ao criar o sticker animado. Tente novamente.');
+        await client.sendMessage(msg.from, 'Ocorreu um erro ao criar o sticker animado. arquivo excede o limite permitido.');
     } finally {
         // Limpeza dos arquivos temporários após o envio
         try {
