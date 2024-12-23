@@ -3,7 +3,7 @@ const qrcode = require('qrcode-terminal');
 const { handleStickerRequest } = require('./service/stickerService'); 
 const { handleWelcomeMessage } = require('./service/welcomeHandler'); 
 const { handleAnimatedStickerRequest } = require('./service/animatedStickerService'); 
-
+const {handleVideoToStickerRequest} = require('./service/videoSticker');
 const client = new Client({
     authStrategy: new LocalAuth(),
 });
@@ -21,6 +21,8 @@ client.on('message', async msg => {
         await handleWelcomeMessage(client, msg);
         
         await handleStickerRequest(client, msg);
+
+        await handleVideoToStickerRequest(client, msg);
 
         await handleAnimatedStickerRequest(client, msg);
     } catch (error) {
