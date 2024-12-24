@@ -32,6 +32,7 @@ const handleWelcomeMessage = async (client, msg) => {
             - !sticker: Envie uma imagem e eu a transformarei em uma figurinha para você.
             - !s: Envie um gif e transformo em figurinha animada.
             - !animado: Envie um vídeo curto de até 10 segundos e transformo em figurinhas.
+            - !converta: Envie uma figurinha e após isso marque a mesma com a frase !converta para transformar em imagem.
             - !menu: Para verificar os comandos.
             Fique à vontade para me chamar sempre que precisar!
             `;
@@ -51,6 +52,7 @@ const handleWelcomeMessage = async (client, msg) => {
             - !sticker: Envie uma imagem e eu a transformarei em uma figurinha para você.
             - !s: Envie um gif e transformo em figurinha animada.
             - !animado: Envie um vídeo curto de até 10 segundos e transformo em figurinhas.
+            - !converta: Envie uma figurinha e após isso marque a mesma com a frase !converta para transformar em imagem.
             - !menu: Para verificar os comandos.
             Fique à vontade para me chamar sempre que precisar!
             `;

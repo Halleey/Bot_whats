@@ -2,8 +2,10 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const { handleStickerRequest } = require('./service/stickerService'); 
 const { handleWelcomeMessage } = require('./service/welcomeHandler'); 
-const { handleAnimatedStickerRequest } = require('./service/animatedStickerService'); 
-const {handleVideoToStickerRequest} = require('./service/videoSticker');
+const { handleAnimatedStickerRequest } = require('./service/stickers/animatedStickerService'); 
+const {handleVideoToStickerRequest} = require('./service/stickers/videoSticker');
+const {handleStickerToMedia} = require('./service/convert/StickerConvert');
+
 const client = new Client({
     authStrategy: new LocalAuth(),
 });
@@ -24,7 +26,9 @@ client.on('message', async msg => {
 
         await handleVideoToStickerRequest(client, msg);
 
-        
+        await handleStickerToMedia(client, msg);
+
+    
 
         await handleAnimatedStickerRequest(client, msg);
     } catch (error) {
