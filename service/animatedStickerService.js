@@ -8,33 +8,46 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 
 const createWebPStickerFromVideo = async (videoPath) => {
     try {
+        console.log(`[DEBUG] Iniciando a criação do WebP a partir do vídeo: ${videoPath}`);
         const webpPath = path.resolve(__dirname, '../animated_sticker.webp');
 
-        
         await new Promise((resolve, reject) => {
             ffmpeg(videoPath)
-                .outputOptions('-vf', 'fps=6,scale=512:512') 
+                // Adicionar filtro para ajustar a rotação automaticamente
+                .outputOptions(
+                    '-vf',
+                    'transpose=2,fps=6,scale=512:512' // `transpose=2` corrige a rotação para vídeos gravados em orientação diferente
+                )
                 .output(webpPath)
-                .on('end', resolve)
-                .on('error', reject)
+                .on('start', (commandLine) => {
+                    console.log(`[DEBUG] FFmpeg iniciou com o comando: ${commandLine}`);
+                })
+                .on('end', () => {
+                    console.log('[DEBUG] FFmpeg concluiu com sucesso.');
+                    resolve();
+                })
+                .on('error', (err) => {
+                    console.error(`[ERROR] FFmpeg falhou: ${err.message}`);
+                    reject(err);
+                })
                 .run();
         });
 
-        // Verifique se o WebP foi gerado corretamente
+        // Verificar se o WebP foi gerado corretamente
         if (!fs.existsSync(webpPath)) {
-            throw new Error('Erro: O WebP não foi gerado corretamente.');
+            throw new Error('Erro: O arquivo WebP não foi gerado corretamente.');
         }
-
+        console.log(`[DEBUG] WebP gerado com sucesso: ${webpPath}`);
         return webpPath;
     } catch (error) {
-        console.error('Erro ao criar o sticker animado:', error);
+        console.error('[ERROR] Erro ao criar o sticker animado: possível causa : \n *arquivo inválido*, \n *não removeu o áudio* \n *tempo limite de vídeo* ', error);
         throw new Error('Falha ao criar o sticker animado.');
     }
 };
 
-// Função para lidar com o comando "!s"
+
 const handleAnimatedStickerRequest = async (client, msg) => {
-    if (msg.body.trim() !== '!s') return; // Só processa a mensagem com o comando "!s"
+    if (msg.body.trim() !== '!s') return; // Processa apenas mensagens com o comando "!s"
 
     if (!msg.hasMedia) {
         await client.sendMessage(msg.from, 'Por favor, envie um vídeo junto com o comando "!s".');
@@ -42,23 +55,23 @@ const handleAnimatedStickerRequest = async (client, msg) => {
     }
 
     try {
-        console.log('Mídia recebida, baixando...');
+        console.log('[DEBUG] Mídia recebida, iniciando download...');
         const media = await msg.downloadMedia();
 
         // Verificar se a mídia foi baixada corretamente
         if (!media || !media.data) {
-            console.error('Erro ao baixar a mídia', media);
+            console.error('[ERROR] Mídia não foi baixada corretamente:', media);
             await client.sendMessage(msg.from, 'Não foi possível baixar o vídeo. Tente novamente.');
             return;
         }
 
-        console.log('Mídia baixada com sucesso');
-
+        console.log('[DEBUG] Mídia baixada com sucesso.');
         const buffer = Buffer.from(media.data, 'base64');
         const tempVideoPath = path.resolve(__dirname, 'temp_video.mp4');
 
         // Salvar o vídeo temporariamente
         fs.writeFileSync(tempVideoPath, buffer);
+        console.log(`[DEBUG] Vídeo salvo temporariamente em: ${tempVideoPath}`);
 
         // Criar o sticker animado diretamente do vídeo para WebP
         const webpPath = await createWebPStickerFromVideo(tempVideoPath);
@@ -69,11 +82,12 @@ const handleAnimatedStickerRequest = async (client, msg) => {
             fs.readFileSync(webpPath).toString('base64'),
             'animated_sticker.webp'
         );
+        console.log('[DEBUG] Enviando o sticker animado para o usuário...');
         await client.sendMessage(msg.from, webpMedia, { sendMediaAsSticker: true });
 
-        console.log('Sticker animado enviado com sucesso!');
+        console.log('[DEBUG] Sticker animado enviado com sucesso!');
     } catch (error) {
-        console.error('Erro ao processar o sticker animado:', error);
+        console.error('[ERROR] Erro ao processar o sticker animado:', error);
         await client.sendMessage(msg.from, 'Ocorreu um erro ao criar o sticker animado. Tente novamente.');
     } finally {
         // Limpeza dos arquivos temporários após o envio
@@ -81,10 +95,16 @@ const handleAnimatedStickerRequest = async (client, msg) => {
             const tempVideoPath = path.resolve(__dirname, 'temp_video.mp4');
             const webpPath = path.resolve(__dirname, '../animated_sticker.webp');
 
-            if (fs.existsSync(tempVideoPath)) fs.unlinkSync(tempVideoPath);
-            if (fs.existsSync(webpPath)) fs.unlinkSync(webpPath);
+            if (fs.existsSync(tempVideoPath)) {
+                fs.unlinkSync(tempVideoPath);
+                console.log('[DEBUG] Arquivo temporário de vídeo removido.');
+            }
+            if (fs.existsSync(webpPath)) {
+                fs.unlinkSync(webpPath);
+                console.log('[DEBUG] Arquivo temporário WebP removido.');
+            }
         } catch (cleanupError) {
-            console.error('Erro ao limpar arquivos temporários:', cleanupError);
+            console.error('[ERROR] Erro ao limpar arquivos temporários:', cleanupError);
         }
     }
 };

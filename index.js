@@ -24,6 +24,8 @@ client.on('message', async msg => {
 
         await handleVideoToStickerRequest(client, msg);
 
+        
+
         await handleAnimatedStickerRequest(client, msg);
     } catch (error) {
         console.error('Erro ao processar mensagem:', error);
