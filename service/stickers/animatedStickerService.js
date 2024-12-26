@@ -16,7 +16,7 @@ const createWebPStickerFromVideo = async (videoPath) => {
                 // Adicionar filtro para ajustar a rotação automaticamente
                 .outputOptions(
                     '-vf',
-                    'transpose=2,fps=6,scale=512:512' // `transpose=2` corrige a rotação para vídeos gravados em orientação diferente
+                    'transpose=2,fps=10,scale=512:512' // `transpose=2` corrige a rotação para vídeos gravados em orientação diferente
                 )
                 .output(webpPath)
                 .on('start', (commandLine) => {
