@@ -55,10 +55,10 @@ async function handlePlayCommand(client, msg) {
                     // Cria a mensagem de mídia a partir do arquivo OGG
                     const media = MessageMedia.fromFilePath(oggFilePath);
 
-                    // Envia o áudio para o usuário
-                    client.sendMessage(msg.from, media, { sendAudioAsVoice: true })
+                    // Envia o áudio como um arquivo para o usuário
+                    client.sendMessage(msg.from, media)
                         .then(() => {
-                            console.log('Áudio enviado com sucesso.');
+                            console.log('Áudio enviado como arquivo com sucesso.');
 
                             // Excluir arquivos temporários após o envio
                             fs.unlinkSync(filePath);

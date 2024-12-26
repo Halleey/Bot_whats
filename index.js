@@ -5,7 +5,7 @@ const { handleWelcomeMessage } = require('./service/welcomeHandler');
 const { handleAnimatedStickerRequest } = require('./service/stickers/animatedStickerService'); 
 const { handleVideoToStickerRequest } = require('./service/stickers/videoSticker');
 const { handleStickerToMedia } = require('./service/convert/StickerConvert');
-const { handleMuteCommand, handleMutedMessages } = require('./service/groups/Admin'); // Novas funções
+const { handleMuteCommand, handleMutedMessages } = require('./service/groups/Admin'); 
 const {handlePlayCommand} = require('./service/audios/PlayMusic')
 
 
